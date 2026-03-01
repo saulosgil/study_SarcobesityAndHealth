@@ -1,0 +1,70 @@
+---
+title: "Sleep quality and health outcomes in patients with sarcobesity - Linear Regressions"
+author: "Saulo Gil"
+date: "2026-03-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Pacotes utilizados
+```{r}
+library(dplyr)
+library(readxl)
+library(skimr)
+library(sjPlot)
+```
+
+## Carregar os dados
+Carrega planilha do excel com dados.
+
+```{r}
+df <- 
+  read_excel("data/df_sarcobesidade.xlsx", 
+    col_types = c("text", "text", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric"))
+```
+
+## Estatísticas descritivas
+Verifica dados descritivos.
+
+```{r}
+skim(df)
+```
+
+
+## Modelos - Regressão linear
+### psqi_score vs hgs_maior - Regressão linear sem ajuste
+```{r}
+model_crude <- lm(formula = psqi_score ~ hgs_maior,
+                  data = df)
+
+tab_model(model_crude)
+```
+
+### Sono vs x - Regressão linear com ajuste
+Os ajustes foram:
+  - x;
+  - x;
+  - x;
+  - x;
+  - x;
+  - x;
+  
+```{r}
+
+
+
+```
