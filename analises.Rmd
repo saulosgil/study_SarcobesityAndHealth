@@ -6,24 +6,25 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Pacotes utilizados
-```{r}
+```{r warning=FALSE}
 library(dplyr)
 library(readxl)
 library(skimr)
-library(sjPlot)
+library(gtsummary)
 ```
 
 ## Carregar os dados
 Carrega planilha do excel com dados.
 
-```{r}
+```{r warning=FALSE}
 df <- 
   read_excel("data/df_sarcobesidade.xlsx", 
     col_types = c("text", "text", "numeric", 
+        "numeric", "numeric", "numeric", 
         "numeric", "numeric", "numeric", 
         "numeric", "numeric", "numeric", 
         "numeric", "numeric", "numeric", 
@@ -38,33 +39,640 @@ df <-
 ```
 
 ## Estatísticas descritivas
+
 Verifica dados descritivos.
 
-```{r}
+```{r warning=FALSE}
 skim(df)
 ```
+## Ajustando dados categóricos
+
+```{r}
+df <- 
+  df |> 
+  mutate(
+    gender_male = as.factor(gender_male),
+    diabetes = as.factor(diabetes),
+    dislipidemia = as.factor(dislipidemia),
+    hypertension = as.factor(hypertension),
+    psychiatric_diseases = as.factor(psychiatric_diseases),
+    rheumatic_diseases = as.factor(rheumatic_diseases),
+    osteopenia = as.factor(osteopenia),
+  )
+
+skim(df)
+
+```
+
+
+
 
 
 ## Modelos - Regressão linear
-### psqi_score vs hgs_maior - Regressão linear sem ajuste
-```{r}
+
+Os modelos são apresentados sem e com ajuste;
+
+Os ajustes foram:
+
+ - Idade como variável continua;
+ 
+ - sexo (feminino e masculino);
+ 
+ - Índice de massas corporal (IMC) como variável continua;
+ 
+ - Diabetes do tipo II (Sim ou Não);
+ 
+ - Doenças psiquiatras (Sim ou Não);
+ 
+ - Doença reumática (Sim ou Não);
+ 
+ - Hipertensão arterial (Sim ou Não);
+
+## psqi_score vs `hgs_maior` - Regressão linear sem ajuste
+```{r warning=FALSE}
 model_crude <- lm(formula = psqi_score ~ hgs_maior,
                   data = df)
 
-tab_model(model_crude)
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
 ```
 
-### Sono vs x - Regressão linear com ajuste
-Os ajustes foram:
-  - x;
-  - x;
-  - x;
-  - x;
-  - x;
-  - x;
-  
-```{r}
+## psqi_score vs `hgs_maior` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ hgs_maior + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
 
-
-
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
 ```
+
+## psqi_score vs `waist_circunference` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ waist_circunference,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `waist_circunference` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ waist_circunference + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `percentual_fat_mass` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ percentual_fat_mass,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `percentual_fat_mass` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ percentual_fat_mass + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `trunk_fat_mass` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ trunk_fat_mass,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `trunk_fat_mass` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ trunk_fat_mass + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `total_fat_mass` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ total_fat_mass,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `total_fat_mass` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ total_fat_mass + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `vat_mass` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ vat_mass,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `vat_mass` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ vat_mass + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `vat_area` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ vat_area,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `vat_area` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ vat_area + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `total_lean_mass` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ total_lean_mass,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `total_lean_mass` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ total_lean_mass + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `appendicular_lean_mass` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ appendicular_lean_mass,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `appendicular_lean_mass` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ appendicular_lean_mass + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `appendicular_lean_mass/bmi` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ `appendicular_lean_mass/bmi`,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `appendicular_lean_mass/bmi` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ `appendicular_lean_mass/bmi` + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `gai_score` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ gai_score,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `gai_score` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ gai_score + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `gds_score` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ gds_score,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `gds_score` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ gds_score + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `physical_domain` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ physical_domain,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `physical_domain` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ physical_domain + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `mental_domain` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ mental_domain,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `mental_domain` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ mental_domain + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `hba1c` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ hba1c,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `hba1c` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ hba1c + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `glucose` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ glucose,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `glucose` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ glucose + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `insulin` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ insulin,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `insulin` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ insulin + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `homa_ir` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ homa_ir,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `homa_ir` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ homa_ir + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `auc_insulin` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ auc_insulin,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `auc_insulin` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ auc_insulin + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `auc_ppc` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ auc_ppc,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `auc_ppc` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ auc_ppc + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
+## psqi_score vs `auc_glicose` - Regressão linear sem ajuste
+```{r warning=FALSE}
+model_crude <- lm(formula = psqi_score ~ auc_glicose,
+                  data = df)
+
+tbl_regression(model_crude,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+
+## psqi_score vs `auc_glicose` - Regressão linear com ajuste
+```{r warning=FALSE}
+model_adj <- lm(formula = psqi_score ~ auc_glicose + 
+                  gender_male + 
+                  bmi + 
+                  diabetes + 
+                  hypertension + 
+                  psychiatric_diseases +  
+                  rheumatic_diseases,
+                data = df) 
+
+tbl_regression(model_adj,
+               pvalue_fun = label_style_pvalue(digits = 3)) |> 
+  bold_p(t = 0.05) |>
+  bold_labels()
+```
+
