@@ -22,7 +22,7 @@ Carrega planilha do excel com dados.
 
 ```{r warning=FALSE}
 df <- 
-  read_excel("data/df_sarcobesidade.xlsx", 
+  read_excel("data/df_sarcobesidade_ajustado.xlsx", 
     col_types = c("text", "text", "numeric", 
         "numeric", "numeric", "numeric", 
         "numeric", "numeric", "numeric", 
@@ -35,7 +35,7 @@ df <-
         "numeric", "numeric", "numeric", 
         "numeric", "numeric", "numeric", 
         "numeric", "numeric", "numeric", 
-        "numeric", "numeric"))
+        "numeric", "numeric", "numeric"))
 ```
 
 ## Estatísticas descritivas
@@ -49,7 +49,8 @@ skim(df)
 
 ```{r}
 df <- 
-  df |> 
+  df |>
+  rename(gender_male = "gender(0F;1M)") |> 
   mutate(
     gender_male = as.factor(gender_male),
     diabetes = as.factor(diabetes),
@@ -102,6 +103,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `hgs_maior` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ hgs_maior + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -130,6 +132,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `waist_circunference` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ waist_circunference + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -157,7 +160,8 @@ tbl_regression(model_crude,
 
 ## psqi_score vs `percentual_fat_mass` - Regressão linear com ajuste
 ```{r warning=FALSE}
-model_adj <- lm(formula = psqi_score ~ percentual_fat_mass + 
+model_adj <- lm(formula = psqi_score ~ percentual_fat_mass +
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -186,6 +190,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `trunk_fat_mass` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ trunk_fat_mass + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -214,6 +219,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `total_fat_mass` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ total_fat_mass + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -242,6 +248,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `vat_mass` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ vat_mass + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -270,6 +277,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `vat_area` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ vat_area + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -298,6 +306,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `total_lean_mass` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ total_lean_mass + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -326,6 +335,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `appendicular_lean_mass` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ appendicular_lean_mass + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -354,6 +364,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `appendicular_lean_mass/bmi` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ `appendicular_lean_mass/bmi` + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -382,6 +393,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `gai_score` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ gai_score + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -410,6 +422,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `gds_score` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ gds_score + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -438,6 +451,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `physical_domain` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ physical_domain + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -466,6 +480,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `mental_domain` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ mental_domain + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -494,6 +509,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `hba1c` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ hba1c + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -522,6 +538,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `glucose` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ glucose + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -550,6 +567,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `insulin` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ insulin + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -578,6 +596,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `homa_ir` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ homa_ir + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -606,6 +625,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `auc_insulin` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ auc_insulin + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -634,6 +654,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `auc_ppc` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ auc_ppc + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
@@ -662,6 +683,7 @@ tbl_regression(model_crude,
 ## psqi_score vs `auc_glicose` - Regressão linear com ajuste
 ```{r warning=FALSE}
 model_adj <- lm(formula = psqi_score ~ auc_glicose + 
+                  age +
                   gender_male + 
                   bmi + 
                   diabetes + 
